@@ -6,25 +6,19 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
-
 var builder = WebApplication.CreateBuilder(args);
-
 // Add services to the container.
 builder.Services.AddControllers();
-
-// Configuración de Entity Framework - USAR MYSQL_URL de Railway
-var connectionString = Environment.GetEnvironmentVariable("MYSQL_URL") ??
-                      builder.Configuration.GetConnectionString("DefaultConnection");
-
+// Configuración de Entity Framework
 builder.Services.AddDbContext<CrmDbContext>(options =>
-    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
-
+    options.UseMySql(
+        builder.Configuration.GetConnectionString("DefaultConnection"),
+        new MySqlServerVersion(new Version(8, 0, 21))
+    ));
 // Configuración de AutoMapper
 builder.Services.AddAutoMapper(typeof(ContactoProfile));
-
 // Registro de servicios
 builder.Services.AddScoped<IContactoService, ContactoService>();
-
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
@@ -35,7 +29,6 @@ builder.Services.AddSwaggerGen(c =>
         Version = "v1",
         Description = "API para gestión de contactos del CRM"
     });
-
     // Configuración JWT corregida
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
@@ -46,7 +39,6 @@ builder.Services.AddSwaggerGen(c =>
         Scheme = "Bearer",
         BearerFormat = "JWT"
     });
-
     c.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
         {
@@ -62,7 +54,6 @@ builder.Services.AddSwaggerGen(c =>
         }
     });
 });
-
 // Configuración de CORS
 builder.Services.AddCors(options =>
 {
@@ -73,7 +64,6 @@ builder.Services.AddCors(options =>
                .AllowAnyHeader();
     });
 });
-
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
@@ -88,9 +78,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("MiClaveSecretaSuperSeguraParaJWT123456789"))
         };
     });
-
 var app = builder.Build();
-
 // Configure the HTTP request pipeline.
 app.UseSwagger();
 app.UseSwaggerUI(c =>
@@ -98,44 +86,10 @@ app.UseSwaggerUI(c =>
     c.SwaggerEndpoint("/swagger/v1/swagger.json", "CRM Contactos API v1");
     c.RoutePrefix = string.Empty; // Hacer Swagger disponible en la raíz "/"
 });
-
-// Comentar HTTPS redirect para Railway (Railway maneja HTTPS automáticamente)
-// app.UseHttpsRedirection();
-
+app.UseHttpsRedirection();
 app.UseCors();
-app.UseAuthentication(); // Agregar esta línea que faltaba
 app.UseAuthorization();
-
 app.MapControllers();
-
-// Rutas de diagnóstico
 app.MapGet("/", () => "CRM Contacts API está funcionando!");
 app.MapGet("/health", () => "OK");
-
-// Ruta para debug de conexión
-app.MapGet("/debug-connection", async (CrmDbContext context) =>
-{
-    try
-    {
-        var canConnect = await context.Database.CanConnectAsync();
-        var connectionStr = Environment.GetEnvironmentVariable("MYSQL_URL") ?? "No MYSQL_URL found";
-
-        return new
-        {
-            CanConnect = canConnect,
-            HasMySqlUrl = !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("MYSQL_URL")),
-            Environment = app.Environment.EnvironmentName
-        };
-    }
-    catch (Exception ex)
-    {
-        return new
-        {
-            Error = ex.Message,
-            InnerError = ex.InnerException?.Message,
-            HasMySqlUrl = !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("MYSQL_URL"))
-        };
-    }
-});
-
 app.Run();
