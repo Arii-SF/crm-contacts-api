@@ -96,11 +96,12 @@ var app = builder.Build();
 
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+app.UseSwagger();
+app.UseSwaggerUI(c =>
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "CRM Contactos API v1");
+    c.RoutePrefix = string.Empty; // Hacer Swagger disponible en la raíz "/"
+});
 
 app.UseHttpsRedirection();
 
@@ -110,6 +111,7 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-
+app.MapGet("/", () => "CRM Contacts API está funcionando!");
+app.MapGet("/health", () => "OK");
 
 app.Run();
