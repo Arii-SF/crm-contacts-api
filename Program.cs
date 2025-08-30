@@ -12,12 +12,12 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllers();
 
-// Configuración de Entity Framework
+// Configuración de Entity Framework - USAR MYSQL_URL de Railway
+var connectionString = Environment.GetEnvironmentVariable("MYSQL_URL") ??
+                      builder.Configuration.GetConnectionString("DefaultConnection");
+
 builder.Services.AddDbContext<CrmDbContext>(options =>
-    options.UseMySql(
-        builder.Configuration.GetConnectionString("DefaultConnection"),
-        new MySqlServerVersion(new Version(8, 0, 21))
-    ));
+    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 
 // Configuración de AutoMapper
 builder.Services.AddAutoMapper(typeof(ContactoProfile));
@@ -63,7 +63,6 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
-
 // Configuración de CORS
 builder.Services.AddCors(options =>
 {
@@ -92,9 +91,6 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 var app = builder.Build();
 
-
-
-
 // Configure the HTTP request pipeline.
 app.UseSwagger();
 app.UseSwaggerUI(c =>
@@ -103,15 +99,43 @@ app.UseSwaggerUI(c =>
     c.RoutePrefix = string.Empty; // Hacer Swagger disponible en la raíz "/"
 });
 
-app.UseHttpsRedirection();
+// Comentar HTTPS redirect para Railway (Railway maneja HTTPS automáticamente)
+// app.UseHttpsRedirection();
 
 app.UseCors();
-
+app.UseAuthentication(); // Agregar esta línea que faltaba
 app.UseAuthorization();
 
 app.MapControllers();
 
+// Rutas de diagnóstico
 app.MapGet("/", () => "CRM Contacts API está funcionando!");
 app.MapGet("/health", () => "OK");
+
+// Ruta para debug de conexión
+app.MapGet("/debug-connection", async (CrmDbContext context) =>
+{
+    try
+    {
+        var canConnect = await context.Database.CanConnectAsync();
+        var connectionStr = Environment.GetEnvironmentVariable("MYSQL_URL") ?? "No MYSQL_URL found";
+
+        return new
+        {
+            CanConnect = canConnect,
+            HasMySqlUrl = !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("MYSQL_URL")),
+            Environment = app.Environment.EnvironmentName
+        };
+    }
+    catch (Exception ex)
+    {
+        return new
+        {
+            Error = ex.Message,
+            InnerError = ex.InnerException?.Message,
+            HasMySqlUrl = !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("MYSQL_URL"))
+        };
+    }
+});
 
 app.Run();
