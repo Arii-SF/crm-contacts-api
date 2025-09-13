@@ -5,6 +5,9 @@ using CrmContactsApi.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using ClosedXML.Excel;
+using System.ComponentModel.DataAnnotations;
+
 
 namespace CrmContactsApi.Controllers
 {
@@ -106,7 +109,154 @@ namespace CrmContactsApi.Controllers
                 return StatusCode(500, $"Error interno del servidor: {ex.Message}");
             }
         }
+        [HttpPost("upload-excel")]
+        [Authorize(Roles = "Gerente de Ventas,Administrador")]
+        public async Task<IActionResult> UploadExcel(IFormFile file)
+        {
 
+            if (file == null || file.Length == 0)
+                return BadRequest("No se ha proporcionado ningún archivo.");
+
+
+            if (file == null || file.Length == 0)
+                return BadRequest("No se ha proporcionado ningún archivo.");
+
+            if (!IsExcelFile(file))
+                return BadRequest("El archivo debe ser un Excel (.xlsx o .xls).");
+
+            try
+            {
+                var contactos = await ProcessExcelFile(file);
+                var result = await ProcessContactosBulk(contactos);
+
+                return Ok(new
+                {
+                    Message = "Contactos procesados exitosamente",
+                    ProcessedCount = result.SuccessCount,
+                    ErrorCount = result.ErrorCount,
+                    Errors = result.Errors
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error procesando el archivo: {ex.Message}");
+            }
+        }
+
+
+        private async Task<List<CreateContactoRequest>> ProcessExcelFile(IFormFile file)
+            {
+                var contactos = new List<CreateContactoRequest>();
+
+                using (var stream = new MemoryStream())
+                {
+                    await file.CopyToAsync(stream);
+                    stream.Position = 0; // Importante: resetear posición
+
+                    using (var workbook = new XLWorkbook(stream))
+                    {
+                        var worksheet = workbook.Worksheet(1);
+                        var lastRow = worksheet.LastRowUsed().RowNumber();
+
+                        // Empezar desde la fila 2 (asumiendo que la fila 1 son headers)
+                        for (int row = 2; row <= lastRow; row++)
+                        {
+                            var contacto = new CreateContactoRequest
+                            {
+                                Nombre = worksheet.Cell(row, 1).GetString().Trim(),
+                                Apellido = worksheet.Cell(row, 2).GetString().Trim(),
+                                Telefono = worksheet.Cell(row, 3).GetString().Trim(),
+                                Email = worksheet.Cell(row, 4).GetString().Trim(),
+                                Dpi = worksheet.Cell(row, 5).GetString().Trim(),
+                                Nit = worksheet.Cell(row, 6).GetString().Trim(),
+                                Direccion = worksheet.Cell(row, 7).GetString().Trim(),
+                                Zona = worksheet.Cell(row, 8).GetString().Trim(),
+                                Municipio = worksheet.Cell(row, 9).GetString().Trim(),
+                                Departamento = worksheet.Cell(row, 10).GetString().Trim(),
+                                DiasCredito = ParseInt(worksheet.Cell(row, 11).GetString()),
+                                LimiteCredito = ParseDecimal(worksheet.Cell(row, 12).GetString()),
+                                Categoria = worksheet.Cell(row, 13).GetString().Trim(),
+                                Subcategoria = worksheet.Cell(row, 14).GetString().Trim(),
+                                UsuarioCreacion = GetCurrentUserId()
+                            };
+
+                            // Validación básica
+                            if (!string.IsNullOrEmpty(contacto.Nombre) &&
+                                !string.IsNullOrEmpty(contacto.Apellido) &&
+                                !string.IsNullOrEmpty(contacto.Dpi))
+                            {
+                                contactos.Add(contacto);
+                            }
+                        }
+                    }
+                }
+
+                return contactos;
+            }
+
+    private async Task<BulkCreateResult> ProcessContactosBulk(List<CreateContactoRequest> contactos)
+        {
+            var result = new BulkCreateResult();
+
+            foreach (var contactoRequest in contactos)
+            {
+                try
+                {
+                    // Usar el mismo ModelState validation que tu endpoint existente
+                    var validationContext = new ValidationContext(contactoRequest);
+                    var validationResults = new List<ValidationResult>();
+
+                    if (!Validator.TryValidateObject(contactoRequest, validationContext, validationResults, true))
+                    {
+                        var errors = string.Join(", ", validationResults.Select(v => v.ErrorMessage));
+                        result.Errors.Add($"Contacto {contactoRequest.Nombre} {contactoRequest.Apellido}: {errors}");
+                        result.ErrorCount++;
+                        continue;
+                    }
+
+                    // Reutilizar tu lógica existente
+                    var contacto = _mapper.Map<Contacto>(contactoRequest);
+                    var createdContacto = await _contactoService.CreateContactoAsync(contacto);
+                    result.SuccessCount++;
+                }
+                catch (InvalidOperationException ex)
+                {
+                    result.Errors.Add($"Contacto {contactoRequest.Nombre} {contactoRequest.Apellido}: {ex.Message}");
+                    result.ErrorCount++;
+                }
+                catch (Exception ex)
+                {
+                    result.Errors.Add($"Error procesando {contactoRequest.Nombre} {contactoRequest.Apellido}: {ex.Message}");
+                    result.ErrorCount++;
+                }
+            }
+
+            return result;
+        }
+
+        private bool IsExcelFile(IFormFile file)
+        {
+            var extension = Path.GetExtension(file.FileName).ToLower();
+            return extension == ".xlsx" || extension == ".xls";
+        }
+
+        private int ParseInt(string? value)
+        {
+            return int.TryParse(value, out int result) ? result : 0;
+        }
+
+        private decimal ParseDecimal(string? value)
+        {
+            return decimal.TryParse(value, out decimal result) ? result : 0.00m;
+        }
+
+        private int? GetCurrentUserId()
+        {
+            // Implementa según cómo obtienes el ID del usuario autenticado
+            // Por ejemplo, desde el token JWT:
+            var userIdClaim = User.FindFirst("userId")?.Value;
+            return int.TryParse(userIdClaim, out int userId) ? userId : null;
+        }
         [HttpPut("{id}")]
         [Authorize(Roles = "Gerente de Ventas,Administrador")]
         public async Task<IActionResult> UpdateContacto(int id, UpdateContactoRequest request)
