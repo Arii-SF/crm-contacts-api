@@ -4,6 +4,7 @@ using CrmContactsApi.Models;
 using CrmContactsApi.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace CrmContactsApi.Controllers
 {
@@ -11,6 +12,7 @@ namespace CrmContactsApi.Controllers
     [Route("api/[controller]")]
     public class ContactosController : ControllerBase
     {
+        private readonly ILogger<ContactosController> _logger;
         private readonly IContactoService _contactoService;
         private readonly IMapper _mapper;
 
@@ -207,5 +209,8 @@ namespace CrmContactsApi.Controllers
                 return StatusCode(500, $"Error interno del servidor: {ex.Message}");
             }
         }
+
+       
     }
+
 }
