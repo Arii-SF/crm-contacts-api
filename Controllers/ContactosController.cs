@@ -18,9 +18,9 @@ namespace CrmContactsApi.Controllers
         private readonly ILogger<ContactosController> _logger;
         private readonly IContactoService _contactoService;
         private readonly IMapper _mapper;
-
         private readonly IEmailService _emailService;
 
+        // SOLO ESTE CONSTRUCTOR:
         public ContactosController(
             IContactoService contactoService,
             IMapper mapper,
@@ -29,12 +29,6 @@ namespace CrmContactsApi.Controllers
             _contactoService = contactoService;
             _mapper = mapper;
             _emailService = emailService;
-        }
-
-        public ContactosController(IContactoService contactoService, IMapper mapper)
-        {
-            _contactoService = contactoService;
-            _mapper = mapper;
         }
 
         [HttpGet]
