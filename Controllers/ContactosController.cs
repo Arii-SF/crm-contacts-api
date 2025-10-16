@@ -561,6 +561,64 @@ namespace CrmContactsApi.Controllers
             }
         }
 
+        [HttpPut("{id}/corregir-datos")]
+        [Authorize(Roles = "Gerente de Ventas,Administrador")]
+        public async Task<ActionResult> CorregirYReenviar(int id, UpdateContactoRequest request)
+        {
+            try
+            {
+                var contacto = await _contactoService.GetContactoByIdAsync(id);
+                if (contacto == null)
+                    return NotFound("Contacto no encontrado");
+
+                // Actualizar los datos
+                _mapper.Map(request, contacto);
+
+                // Generar nuevo token y resetear verificación
+                contacto.Activo = false;
+                contacto.EmailVerificado = false;
+                contacto.TokenVerificacion = Guid.NewGuid().ToString();
+                contacto.FechaEnvioVerificacion = DateTime.Now;
+                contacto.FechaActualizacion = DateTime.Now;
+
+                await _contactoService.UpdateContactoAsync(contacto);
+
+                // Reenviar email con los datos corregidos
+                var emailEnviado = await _emailService.EnviarEmailVerificacionAsync(
+                    contacto.Email,
+                    $"{contacto.Nombre} {contacto.Apellido}",
+                    contacto.TokenVerificacion,
+                    contacto.Id,
+                    new
+                    {
+                        contacto.Nombre,
+                        contacto.Apellido,
+                        contacto.Dpi,
+                        contacto.Nit,
+                        contacto.Telefono,
+                        contacto.Email,
+                        contacto.Direccion,
+                        contacto.Zona,
+                        contacto.Municipio,
+                        contacto.Departamento,
+                        contacto.Categoria,
+                        contacto.Subcategoria,
+                        contacto.DiasCredito,
+                        contacto.LimiteCredito
+                    }
+                );
+
+                if (emailEnviado)
+                    return Ok(new { mensaje = "Datos actualizados y email de verificación reenviado exitosamente" });
+                else
+                    return Ok(new { mensaje = "Datos actualizados pero no se pudo enviar el email" });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error: {ex.Message}");
+            }
+        }
+
         private string GenerarHtmlExito(string titulo, string mensaje)
         {
             return $@"
