@@ -20,7 +20,6 @@ namespace CrmContactsApi.Controllers
         private readonly IMapper _mapper;
         private readonly IEmailService _emailService;
 
-        // SOLO ESTE CONSTRUCTOR:
         public ContactosController(
             IContactoService contactoService,
             IMapper mapper,
@@ -109,11 +108,29 @@ namespace CrmContactsApi.Controllers
 
                 var createdContacto = await _contactoService.CreateContactoAsync(contacto);
 
+                // Enviar email con TODOS los datos
                 var emailEnviado = await _emailService.EnviarEmailVerificacionAsync(
                     createdContacto.Email,
                     $"{createdContacto.Nombre} {createdContacto.Apellido}",
                     createdContacto.TokenVerificacion,
-                    createdContacto.Id
+                    createdContacto.Id,
+                    new
+                    {
+                        createdContacto.Nombre,
+                        createdContacto.Apellido,
+                        createdContacto.Dpi,
+                        createdContacto.Nit,
+                        createdContacto.Telefono,
+                        createdContacto.Email,
+                        createdContacto.Direccion,
+                        createdContacto.Zona,
+                        createdContacto.Municipio,
+                        createdContacto.Departamento,
+                        createdContacto.Categoria,
+                        createdContacto.Subcategoria,
+                        createdContacto.DiasCredito,
+                        createdContacto.LimiteCredito
+                    }
                 );
 
                 var contactoDto = _mapper.Map<ContactoDto>(createdContacto);
@@ -122,7 +139,7 @@ namespace CrmContactsApi.Controllers
                 {
                     contacto = contactoDto,
                     mensaje = emailEnviado
-                        ? "Contacto creado exitosamente. Se ha enviado un email de verificación."
+                        ? "Contacto creado exitosamente. Se ha enviado un email de verificación con todos los datos."
                         : "Contacto creado pero no se pudo enviar el email.",
                     emailEnviado = emailEnviado,
                     requiereVerificacion = true
@@ -175,56 +192,56 @@ namespace CrmContactsApi.Controllers
 
 
         private async Task<List<CreateContactoRequest>> ProcessExcelFile(IFormFile file)
+        {
+            var contactos = new List<CreateContactoRequest>();
+
+            using (var stream = new MemoryStream())
             {
-                var contactos = new List<CreateContactoRequest>();
+                await file.CopyToAsync(stream);
+                stream.Position = 0; // Importante: resetear posición
 
-                using (var stream = new MemoryStream())
+                using (var workbook = new XLWorkbook(stream))
                 {
-                    await file.CopyToAsync(stream);
-                    stream.Position = 0; // Importante: resetear posición
+                    var worksheet = workbook.Worksheet(1);
+                    var lastRow = worksheet.LastRowUsed().RowNumber();
 
-                    using (var workbook = new XLWorkbook(stream))
+                    // Empezar desde la fila 2 (asumiendo que la fila 1 son headers)
+                    for (int row = 2; row <= lastRow; row++)
                     {
-                        var worksheet = workbook.Worksheet(1);
-                        var lastRow = worksheet.LastRowUsed().RowNumber();
-
-                        // Empezar desde la fila 2 (asumiendo que la fila 1 son headers)
-                        for (int row = 2; row <= lastRow; row++)
+                        var contacto = new CreateContactoRequest
                         {
-                            var contacto = new CreateContactoRequest
-                            {
-                                Nombre = worksheet.Cell(row, 1).GetString().Trim(),
-                                Apellido = worksheet.Cell(row, 2).GetString().Trim(),
-                                Telefono = worksheet.Cell(row, 3).GetString().Trim(),
-                                Email = worksheet.Cell(row, 4).GetString().Trim(),
-                                Dpi = worksheet.Cell(row, 5).GetString().Trim(),
-                                Nit = worksheet.Cell(row, 6).GetString().Trim(),
-                                Direccion = worksheet.Cell(row, 7).GetString().Trim(),
-                                Zona = worksheet.Cell(row, 8).GetString().Trim(),
-                                Municipio = worksheet.Cell(row, 9).GetString().Trim(),
-                                Departamento = worksheet.Cell(row, 10).GetString().Trim(),
-                                DiasCredito = ParseInt(worksheet.Cell(row, 11).GetString()),
-                                LimiteCredito = ParseDecimal(worksheet.Cell(row, 12).GetString()),
-                                Categoria = worksheet.Cell(row, 13).GetString().Trim(),
-                                Subcategoria = worksheet.Cell(row, 14).GetString().Trim(),
-                                UsuarioCreacion = GetCurrentUserId()
-                            };
+                            Nombre = worksheet.Cell(row, 1).GetString().Trim(),
+                            Apellido = worksheet.Cell(row, 2).GetString().Trim(),
+                            Telefono = worksheet.Cell(row, 3).GetString().Trim(),
+                            Email = worksheet.Cell(row, 4).GetString().Trim(),
+                            Dpi = worksheet.Cell(row, 5).GetString().Trim(),
+                            Nit = worksheet.Cell(row, 6).GetString().Trim(),
+                            Direccion = worksheet.Cell(row, 7).GetString().Trim(),
+                            Zona = worksheet.Cell(row, 8).GetString().Trim(),
+                            Municipio = worksheet.Cell(row, 9).GetString().Trim(),
+                            Departamento = worksheet.Cell(row, 10).GetString().Trim(),
+                            DiasCredito = ParseInt(worksheet.Cell(row, 11).GetString()),
+                            LimiteCredito = ParseDecimal(worksheet.Cell(row, 12).GetString()),
+                            Categoria = worksheet.Cell(row, 13).GetString().Trim(),
+                            Subcategoria = worksheet.Cell(row, 14).GetString().Trim(),
+                            UsuarioCreacion = GetCurrentUserId()
+                        };
 
-                            // Validación básica
-                            if (!string.IsNullOrEmpty(contacto.Nombre) &&
-                                !string.IsNullOrEmpty(contacto.Apellido) &&
-                                !string.IsNullOrEmpty(contacto.Dpi))
-                            {
-                                contactos.Add(contacto);
-                            }
+                        // Validación básica
+                        if (!string.IsNullOrEmpty(contacto.Nombre) &&
+                            !string.IsNullOrEmpty(contacto.Apellido) &&
+                            !string.IsNullOrEmpty(contacto.Dpi))
+                        {
+                            contactos.Add(contacto);
                         }
                     }
                 }
-
-                return contactos;
             }
 
-    private async Task<BulkCreateResult> ProcessContactosBulk(List<CreateContactoRequest> contactos)
+            return contactos;
+        }
+
+        private async Task<BulkCreateResult> ProcessContactosBulk(List<CreateContactoRequest> contactos)
         {
             var result = new BulkCreateResult();
 
@@ -434,6 +451,36 @@ namespace CrmContactsApi.Controllers
             }
         }
 
+        [HttpGet("corregir/{id}/{token}")]
+        [AllowAnonymous]
+        public async Task<IActionResult> ReportarError(int id, string token)
+        {
+            try
+            {
+                var contacto = await _contactoService.GetContactoByIdAsync(id);
+
+                if (contacto == null)
+                    return Content(GenerarHtmlError("Contacto no encontrado",
+                        "El contacto que intentas reportar no existe en el sistema."), "text/html");
+
+                if (contacto.TokenVerificacion != token)
+                    return Content(GenerarHtmlError("Token inválido",
+                        "El enlace no es válido."), "text/html");
+
+                // Marcar el contacto como que necesita corrección
+                contacto.Activo = false;
+                contacto.EmailVerificado = false;
+                await _contactoService.UpdateContactoAsync(contacto);
+
+                return Content(GenerarHtmlReporteError(contacto.Nombre), "text/html");
+            }
+            catch (Exception ex)
+            {
+                return Content(GenerarHtmlError("Error del servidor",
+                    "Ocurrió un error. Por favor intenta nuevamente más tarde."), "text/html");
+            }
+        }
+
         [HttpGet("{id}/estado-verificacion")]
         [Authorize(Roles = "Gerente de Ventas,Administrador,Vendedor")]
         public async Task<ActionResult> GetEstadoVerificacion(int id)
@@ -478,11 +525,29 @@ namespace CrmContactsApi.Controllers
                 contacto.FechaEnvioVerificacion = DateTime.Now;
                 await _contactoService.UpdateContactoAsync(contacto);
 
+                // Reenviar email con todos los datos
                 var emailEnviado = await _emailService.EnviarEmailVerificacionAsync(
                     contacto.Email,
                     $"{contacto.Nombre} {contacto.Apellido}",
                     contacto.TokenVerificacion,
-                    contacto.Id
+                    contacto.Id,
+                    new
+                    {
+                        contacto.Nombre,
+                        contacto.Apellido,
+                        contacto.Dpi,
+                        contacto.Nit,
+                        contacto.Telefono,
+                        contacto.Email,
+                        contacto.Direccion,
+                        contacto.Zona,
+                        contacto.Municipio,
+                        contacto.Departamento,
+                        contacto.Categoria,
+                        contacto.Subcategoria,
+                        contacto.DiasCredito,
+                        contacto.LimiteCredito
+                    }
                 );
 
                 if (emailEnviado)
@@ -554,6 +619,35 @@ namespace CrmContactsApi.Controllers
 </html>";
         }
 
+        private string GenerarHtmlReporteError(string nombre)
+        {
+            return $@"
+<!DOCTYPE html>
+<html lang='es'>
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <title>Reporte recibido</title>
+    <style>
+        body {{ font-family: Arial, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center; margin: 0; padding: 20px; }}
+        .container {{ background: white; padding: 50px; border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); text-align: center; max-width: 500px; }}
+        .icon {{ width: 80px; height: 80px; background: #f59e0b; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 30px; font-size: 40px; }}
+        h1 {{ color: #f59e0b; margin-bottom: 20px; font-size: 28px; }}
+        p {{ color: #6b7280; line-height: 1.6; font-size: 16px; }}
+        .footer {{ margin-top: 30px; padding-top: 20px; border-top: 1px solid #e5e7eb; color: #9ca3af; font-size: 13px; }}
+    </style>
+</head>
+<body>
+    <div class='container'>
+        <div class='icon'>✏️</div>
+        <h1>Reporte Recibido</h1>
+        <p>Gracias <strong>{nombre}</strong>,</p>
+        <p>Hemos recibido tu reporte de que hay información incorrecta en tu registro.</p>
+        <p><strong>Nuestro equipo se pondrá en contacto contigo</strong> en las próximas 24 horas para corregir los datos.</p>
+        <div class='footer'><p>CRM Contactos © 2025</p></div>
+    </div>
+</body>
+</html>";
+        }
     }
-
 }
