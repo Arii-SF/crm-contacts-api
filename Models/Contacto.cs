@@ -61,5 +61,10 @@ namespace CrmContactsApi.Models
 
         // Navegación
         public virtual ICollection<ContactoHistorial> Historial { get; set; } = new List<ContactoHistorial>();
+
+        public string? TokenVerificacion { get; set; }
+        public DateTime? FechaEnvioVerificacion { get; set; }
+        public DateTime? FechaVerificacion { get; set; }
+        public bool EmailVerificado { get; set; } = false;
     }
 }

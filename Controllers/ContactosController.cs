@@ -19,6 +19,18 @@ namespace CrmContactsApi.Controllers
         private readonly IContactoService _contactoService;
         private readonly IMapper _mapper;
 
+        private readonly IEmailService _emailService;
+
+        public ContactosController(
+            IContactoService contactoService,
+            IMapper mapper,
+            IEmailService emailService)
+        {
+            _contactoService = contactoService;
+            _mapper = mapper;
+            _emailService = emailService;
+        }
+
         public ContactosController(IContactoService contactoService, IMapper mapper)
         {
             _contactoService = contactoService;
@@ -90,15 +102,37 @@ namespace CrmContactsApi.Controllers
             try
             {
                 if (!ModelState.IsValid)
-                {
                     return BadRequest(ModelState);
-                }
+
+                if (string.IsNullOrWhiteSpace(request.Email))
+                    return BadRequest("El email es requerido para enviar la verificación");
 
                 var contacto = _mapper.Map<Contacto>(request);
+                contacto.Activo = false;
+                contacto.EmailVerificado = false;
+                contacto.TokenVerificacion = Guid.NewGuid().ToString();
+                contacto.FechaEnvioVerificacion = DateTime.Now;
+
                 var createdContacto = await _contactoService.CreateContactoAsync(contacto);
+
+                var emailEnviado = await _emailService.EnviarEmailVerificacionAsync(
+                    createdContacto.Email,
+                    $"{createdContacto.Nombre} {createdContacto.Apellido}",
+                    createdContacto.TokenVerificacion,
+                    createdContacto.Id
+                );
+
                 var contactoDto = _mapper.Map<ContactoDto>(createdContacto);
 
-                return CreatedAtAction(nameof(GetContacto), new { id = contactoDto.Id }, contactoDto);
+                return CreatedAtAction(nameof(GetContacto), new { id = contactoDto.Id }, new
+                {
+                    contacto = contactoDto,
+                    mensaje = emailEnviado
+                        ? "Contacto creado exitosamente. Se ha enviado un email de verificación."
+                        : "Contacto creado pero no se pudo enviar el email.",
+                    emailEnviado = emailEnviado,
+                    requiereVerificacion = true
+                });
             }
             catch (InvalidOperationException ex)
             {
@@ -106,9 +140,11 @@ namespace CrmContactsApi.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"Error interno del servidor: {ex.Message}");
+                return StatusCode(500, $"Error: {ex.Message}");
             }
         }
+
+
         [HttpPost("upload-excel")]
         [Authorize(Roles = "Gerente de Ventas,Administrador")]
         public async Task<IActionResult> UploadExcel(IFormFile file)
@@ -360,7 +396,170 @@ namespace CrmContactsApi.Controllers
             }
         }
 
-       
+        [HttpGet("verificar/{id}/{token}")]
+        [AllowAnonymous]
+        public async Task<IActionResult> VerificarContacto(int id, string token)
+        {
+            try
+            {
+                var contacto = await _contactoService.GetContactoByIdAsync(id);
+
+                if (contacto == null)
+                    return Content(GenerarHtmlError("Contacto no encontrado",
+                        "El contacto que intentas verificar no existe en el sistema."), "text/html");
+
+                if (contacto.EmailVerificado)
+                    return Content(GenerarHtmlExito("Ya verificado",
+                        "Este contacto ya fue verificado anteriormente. Tu cuenta está activa."), "text/html");
+
+                if (contacto.TokenVerificacion != token)
+                    return Content(GenerarHtmlError("Token inválido",
+                        "El enlace de verificación no es válido. Por favor contacta al administrador."), "text/html");
+
+                if (contacto.FechaEnvioVerificacion.HasValue &&
+                    DateTime.Now - contacto.FechaEnvioVerificacion.Value > TimeSpan.FromHours(24))
+                {
+                    return Content(GenerarHtmlError("Enlace expirado",
+                        "El enlace de verificación ha expirado. Por favor contacta al administrador para recibir un nuevo enlace."), "text/html");
+                }
+
+                contacto.Activo = true;
+                contacto.EmailVerificado = true;
+                contacto.FechaVerificacion = DateTime.Now;
+                contacto.TokenVerificacion = null;
+
+                await _contactoService.UpdateContactoAsync(contacto);
+
+                return Content(GenerarHtmlExito("¡Verificación Exitosa!",
+                    $"Gracias {contacto.Nombre}, tus datos han sido verificados correctamente. Tu contacto está ahora activo en el sistema."), "text/html");
+            }
+            catch (Exception ex)
+            {
+                return Content(GenerarHtmlError("Error del servidor",
+                    "Ocurrió un error al procesar tu verificación. Por favor intenta nuevamente más tarde."), "text/html");
+            }
+        }
+
+        [HttpGet("{id}/estado-verificacion")]
+        [Authorize(Roles = "Gerente de Ventas,Administrador,Vendedor")]
+        public async Task<ActionResult> GetEstadoVerificacion(int id)
+        {
+            try
+            {
+                var contacto = await _contactoService.GetContactoByIdAsync(id);
+                if (contacto == null)
+                    return NotFound();
+
+                return Ok(new
+                {
+                    id = contacto.Id,
+                    nombre = $"{contacto.Nombre} {contacto.Apellido}",
+                    email = contacto.Email,
+                    emailVerificado = contacto.EmailVerificado,
+                    activo = contacto.Activo,
+                    fechaEnvioVerificacion = contacto.FechaEnvioVerificacion,
+                    fechaVerificacion = contacto.FechaVerificacion
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error: {ex.Message}");
+            }
+        }
+
+        [HttpPost("{id}/reenviar-verificacion")]
+        [Authorize(Roles = "Gerente de Ventas,Administrador")]
+        public async Task<ActionResult> ReenviarVerificacion(int id)
+        {
+            try
+            {
+                var contacto = await _contactoService.GetContactoByIdAsync(id);
+                if (contacto == null)
+                    return NotFound("Contacto no encontrado");
+
+                if (contacto.EmailVerificado)
+                    return BadRequest("Este contacto ya está verificado");
+
+                contacto.TokenVerificacion = Guid.NewGuid().ToString();
+                contacto.FechaEnvioVerificacion = DateTime.Now;
+                await _contactoService.UpdateContactoAsync(contacto);
+
+                var emailEnviado = await _emailService.EnviarEmailVerificacionAsync(
+                    contacto.Email,
+                    $"{contacto.Nombre} {contacto.Apellido}",
+                    contacto.TokenVerificacion,
+                    contacto.Id
+                );
+
+                if (emailEnviado)
+                    return Ok(new { mensaje = "Email de verificación reenviado exitosamente" });
+                else
+                    return StatusCode(500, "No se pudo enviar el email");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error: {ex.Message}");
+            }
+        }
+
+        private string GenerarHtmlExito(string titulo, string mensaje)
+        {
+            return $@"
+<!DOCTYPE html>
+<html lang='es'>
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <title>{titulo}</title>
+    <style>
+        body {{ font-family: Arial, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center; margin: 0; padding: 20px; }}
+        .container {{ background: white; padding: 50px; border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); text-align: center; max-width: 500px; }}
+        .icon {{ width: 80px; height: 80px; background: #10b981; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 30px; font-size: 40px; }}
+        h1 {{ color: #10b981; margin-bottom: 20px; font-size: 28px; }}
+        p {{ color: #6b7280; line-height: 1.6; font-size: 16px; }}
+        .footer {{ margin-top: 30px; padding-top: 20px; border-top: 1px solid #e5e7eb; color: #9ca3af; font-size: 13px; }}
+    </style>
+</head>
+<body>
+    <div class='container'>
+        <div class='icon'>✓</div>
+        <h1>{titulo}</h1>
+        <p>{mensaje}</p>
+        <div class='footer'><p>CRM Contactos © 2025</p></div>
+    </div>
+</body>
+</html>";
+        }
+
+        private string GenerarHtmlError(string titulo, string mensaje)
+        {
+            return $@"
+<!DOCTYPE html>
+<html lang='es'>
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <title>{titulo}</title>
+    <style>
+        body {{ font-family: Arial, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center; margin: 0; padding: 20px; }}
+        .container {{ background: white; padding: 50px; border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); text-align: center; max-width: 500px; }}
+        .icon {{ width: 80px; height: 80px; background: #ef4444; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 30px; font-size: 40px; color: white; }}
+        h1 {{ color: #ef4444; margin-bottom: 20px; font-size: 28px; }}
+        p {{ color: #6b7280; line-height: 1.6; font-size: 16px; }}
+        .footer {{ margin-top: 30px; padding-top: 20px; border-top: 1px solid #e5e7eb; color: #9ca3af; font-size: 13px; }}
+    </style>
+</head>
+<body>
+    <div class='container'>
+        <div class='icon'>✕</div>
+        <h1>{titulo}</h1>
+        <p>{mensaje}</p>
+        <div class='footer'><p>CRM Contactos © 2025</p></div>
+    </div>
+</body>
+</html>";
+        }
+
     }
 
 }
