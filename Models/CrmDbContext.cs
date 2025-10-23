@@ -12,10 +12,22 @@ namespace CrmContactsApi.Models
         public DbSet<Contacto> Contactos { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Role> Roles { get; set; }
+        public DbSet<CalificacionContacto> CalificacionesContacto { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<CalificacionContacto>(entity =>
+            {
+                entity.ToTable("calificaciones_contacto");
+
+                entity.HasOne(c => c.Contacto)
+                    .WithMany()
+                    .HasForeignKey(c => c.ContactoId)
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
 
             // Configuración de la tabla contactos
             modelBuilder.Entity<Contacto>(entity =>
@@ -111,6 +123,7 @@ namespace CrmContactsApi.Models
                     .IsUnique()
                     .HasDatabaseName("IX_contactos_dpi");
             });
+
 
            
         }

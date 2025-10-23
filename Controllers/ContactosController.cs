@@ -19,15 +19,19 @@ namespace CrmContactsApi.Controllers
         private readonly IContactoService _contactoService;
         private readonly IMapper _mapper;
         private readonly IEmailService _emailService;
+        private readonly ICalificacionService _calificacionService;
+
 
         public ContactosController(
             IContactoService contactoService,
             IMapper mapper,
-            IEmailService emailService)
+            IEmailService emailService,
+            ICalificacionService calificacionService)
         {
             _contactoService = contactoService;
             _mapper = mapper;
             _emailService = emailService;
+            _calificacionService = calificacionService;
         }
 
         [HttpGet]
@@ -616,6 +620,26 @@ namespace CrmContactsApi.Controllers
             catch (Exception ex)
             {
                 return StatusCode(500, $"Error: {ex.Message}");
+            }
+        }
+        
+        // GET: api/contactos/5/perfil
+        [HttpGet("{id}/perfil")]
+        [Authorize(Roles = "Gerente de Ventas,Administrador,Vendedor")]
+        public async Task<ActionResult<PerfilContactoDto>> GetPerfilContacto(int id)
+        {
+            try
+            {
+                var perfil = await _calificacionService.GetPerfilContactoAsync(id);
+                return Ok(perfil);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return NotFound(new { error = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = $"Error interno: {ex.Message}" });
             }
         }
 

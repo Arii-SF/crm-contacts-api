@@ -25,6 +25,11 @@ namespace CrmContactsApi.Mappings
                 .ForMember(dest => dest.FechaCreacion, opt => opt.Ignore())
                 .ForMember(dest => dest.FechaActualizacion, opt => opt.MapFrom(src => DateTime.Now))
                 .ForMember(dest => dest.UsuarioCreacion, opt => opt.Ignore());
+
+            CreateMap<CalificacionContacto, CalificacionDto>();
+            CreateMap<CreateCalificacionRequest, CalificacionContacto>();
+            CreateMap<Contacto, ContactoConCalificacionDto>()
+                .IncludeBase<Contacto, ContactoDto>();
         }
     }
 }

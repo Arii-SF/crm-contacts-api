@@ -99,6 +99,9 @@ builder.Services.Configure<KestrelServerOptions>(options =>
 
 builder.Services.AddHttpClient<IEmailService, EmailService>();
 
+builder.Services.AddScoped<ICalificacionService, CalificacionService>();
+
+
 var app = builder.Build();
 // Configure the HTTP request pipeline.
 app.UseSwagger();
