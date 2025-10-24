@@ -35,7 +35,7 @@ namespace CrmContactsApi.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Gerente de Ventas,Administrador,Vendedor")]
+        [Authorize(Roles = "Gerente,Administrador,Vendedor")]
         public async Task<ActionResult<IEnumerable<ContactoDto>>> GetContactos([FromQuery] bool incluirInactivos = false)
         {
             try
@@ -51,7 +51,7 @@ namespace CrmContactsApi.Controllers
         }
 
         [HttpGet("{id}")]
-        [Authorize(Roles = "Gerente de Ventas,Administrador,Vendedor")]
+        [Authorize(Roles = "Gerente,Administrador,Vendedor")]
         public async Task<ActionResult<ContactoDto>> GetContacto(int id)
         {
             try
@@ -72,7 +72,7 @@ namespace CrmContactsApi.Controllers
         }
 
         [HttpGet("dpi/{dpi}")]
-        [Authorize(Roles = "Gerente de Ventas,Administrador,Vendedor")]
+        [Authorize(Roles = "Gerente,Administrador,Vendedor")]
         public async Task<ActionResult<ContactoDto>> GetContactoByDpi(string dpi)
         {
             try
@@ -93,7 +93,7 @@ namespace CrmContactsApi.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Gerente de Ventas,Administrador")]
+        [Authorize(Roles = "Gerente,Administrador")]
         public async Task<ActionResult<ContactoDto>> CreateContacto(CreateContactoRequest request)
         {
             try
@@ -161,7 +161,7 @@ namespace CrmContactsApi.Controllers
 
 
         [HttpPost("upload-excel")]
-        [Authorize(Roles = "Gerente de Ventas,Administrador")]
+        [Authorize(Roles = "Gerente,Administrador")]
         public async Task<IActionResult> UploadExcel(IFormFile file)
         {
 
@@ -309,7 +309,7 @@ namespace CrmContactsApi.Controllers
             return int.TryParse(userIdClaim, out int userId) ? userId : null;
         }
         [HttpPut("{id}")]
-        [Authorize(Roles = "Gerente de Ventas,Administrador")]
+        [Authorize(Roles = "Gerente,Administrador")]
         public async Task<IActionResult> UpdateContacto(int id, UpdateContactoRequest request)
         {
             try
@@ -341,7 +341,7 @@ namespace CrmContactsApi.Controllers
         }
 
         [HttpDelete("{id}")]
-        [Authorize(Roles = "Gerente de Ventas,Administrador")]
+        [Authorize(Roles = "Gerente,Administrador")]
         public async Task<IActionResult> DeleteContacto(int id)
         {
             try
@@ -362,7 +362,7 @@ namespace CrmContactsApi.Controllers
         }
 
         [HttpPatch("{id}/activar")]
-        [Authorize(Roles = "Gerente de Ventas,Administrador")]
+        [Authorize(Roles = "Gerente,Administrador")]
         public async Task<IActionResult> ActivarContacto(int id, [FromBody] int? usuarioActualizacion = null)
         {
             try
@@ -387,7 +387,7 @@ namespace CrmContactsApi.Controllers
         }
 
         [HttpPatch("{id}/desactivar")]
-        [Authorize(Roles = "Gerente de Ventas,Administrador")]
+        [Authorize(Roles = "Gerente,Administrador")]
         public async Task<IActionResult> DesactivarContacto(int id, [FromBody] int? usuarioActualizacion = null)
         {
             try
@@ -486,7 +486,7 @@ namespace CrmContactsApi.Controllers
         }
 
         [HttpGet("{id}/estado-verificacion")]
-        [Authorize(Roles = "Gerente de Ventas,Administrador,Vendedor")]
+        [Authorize(Roles = "Gerente,Administrador,Vendedor")]
         public async Task<ActionResult> GetEstadoVerificacion(int id)
         {
             try
@@ -513,7 +513,7 @@ namespace CrmContactsApi.Controllers
         }
 
         [HttpPost("{id}/reenviar-verificacion")]
-        [Authorize(Roles = "Gerente de Ventas,Administrador")]
+        [Authorize(Roles = "Gerente,Administrador")]
         public async Task<ActionResult> ReenviarVerificacion(int id)
         {
             try
@@ -566,7 +566,7 @@ namespace CrmContactsApi.Controllers
         }
 
         [HttpPut("{id}/corregir-datos")]
-        [Authorize(Roles = "Gerente de Ventas,Administrador")]
+        [Authorize(Roles = "Gerente,Administrador")]
         public async Task<ActionResult> CorregirYReenviar(int id, UpdateContactoRequest request)
         {
             try
@@ -625,7 +625,7 @@ namespace CrmContactsApi.Controllers
         
         // GET: api/contactos/5/perfil
         [HttpGet("{id}/perfil")]
-        [Authorize(Roles = "Gerente de Ventas,Administrador,Vendedor")]
+        [Authorize(Roles = "Gerente,Administrador,Vendedor")]
         public async Task<ActionResult<PerfilContactoDto>> GetPerfilContacto(int id)
         {
             try

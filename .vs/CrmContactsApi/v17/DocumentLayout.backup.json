@@ -3,12 +3,20 @@
   "WorkspaceRootPath": "C:\\Users\\madel\\CrmContactsApi\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{6B85B821-E8B6-4CB2-873F-A6F022EF3846}|CrmContactsApi.csproj|c:\\users\\madel\\crmcontactsapi\\controllers\\contactoscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6B85B821-E8B6-4CB2-873F-A6F022EF3846}|CrmContactsApi.csproj|solutionrelative:controllers\\contactoscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{6B85B821-E8B6-4CB2-873F-A6F022EF3846}|CrmContactsApi.csproj|c:\\users\\madel\\crmcontactsapi\\services\\calificacionservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{6B85B821-E8B6-4CB2-873F-A6F022EF3846}|CrmContactsApi.csproj|solutionrelative:services\\calificacionservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{6B85B821-E8B6-4CB2-873F-A6F022EF3846}|CrmContactsApi.csproj|c:\\users\\madel\\crmcontactsapi\\controllers\\contactoscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{6B85B821-E8B6-4CB2-873F-A6F022EF3846}|CrmContactsApi.csproj|solutionrelative:controllers\\contactoscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{6B85B821-E8B6-4CB2-873F-A6F022EF3846}|CrmContactsApi.csproj|c:\\users\\madel\\crmcontactsapi\\services\\icalificacionservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6B85B821-E8B6-4CB2-873F-A6F022EF3846}|CrmContactsApi.csproj|solutionrelative:services\\icalificacionservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6B85B821-E8B6-4CB2-873F-A6F022EF3846}|CrmContactsApi.csproj|c:\\users\\madel\\crmcontactsapi\\services\\icontactoservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6B85B821-E8B6-4CB2-873F-A6F022EF3846}|CrmContactsApi.csproj|solutionrelative:services\\icontactoservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{6B85B821-E8B6-4CB2-873F-A6F022EF3846}|CrmContactsApi.csproj|c:\\users\\madel\\crmcontactsapi\\mappings\\contactoprofile.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -29,10 +37,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{6B85B821-E8B6-4CB2-873F-A6F022EF3846}|CrmContactsApi.csproj|c:\\users\\madel\\crmcontactsapi\\services\\contactoservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{6B85B821-E8B6-4CB2-873F-A6F022EF3846}|CrmContactsApi.csproj|solutionrelative:services\\contactoservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{6B85B821-E8B6-4CB2-873F-A6F022EF3846}|CrmContactsApi.csproj|c:\\users\\madel\\crmcontactsapi\\services\\icontactoservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{6B85B821-E8B6-4CB2-873F-A6F022EF3846}|CrmContactsApi.csproj|solutionrelative:services\\icontactoservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{6B85B821-E8B6-4CB2-873F-A6F022EF3846}|CrmContactsApi.csproj|c:\\users\\madel\\crmcontactsapi\\services\\idocumentoservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -77,10 +81,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{6B85B821-E8B6-4CB2-873F-A6F022EF3846}|CrmContactsApi.csproj|c:\\users\\madel\\crmcontactsapi\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{6B85B821-E8B6-4CB2-873F-A6F022EF3846}|CrmContactsApi.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{6B85B821-E8B6-4CB2-873F-A6F022EF3846}|CrmContactsApi.csproj|c:\\users\\madel\\crmcontactsapi\\services\\icalificacionservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{6B85B821-E8B6-4CB2-873F-A6F022EF3846}|CrmContactsApi.csproj|solutionrelative:services\\icalificacionservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{6B85B821-E8B6-4CB2-873F-A6F022EF3846}|CrmContactsApi.csproj|c:\\users\\madel\\crmcontactsapi\\models\\crmdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -146,7 +146,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 6,
+          "SelectedChildIndex": 5,
           "Children": [
             {
               "$type": "Document",
@@ -163,45 +163,71 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "CalificacionDto.cs",
-              "DocumentMoniker": "C:\\Users\\madel\\CrmContactsApi\\Models\\DTOs\\CalificacionDto.cs",
-              "RelativeDocumentMoniker": "Models\\DTOs\\CalificacionDto.cs",
-              "ToolTip": "C:\\Users\\madel\\CrmContactsApi\\Models\\DTOs\\CalificacionDto.cs",
-              "RelativeToolTip": "Models\\DTOs\\CalificacionDto.cs",
-              "ViewState": "AgIAAB8AAAAAAAAAAAA/wCgAAABAAAAAAAAAAA==",
+              "DocumentIndex": 6,
+              "Title": "CalificacionContacto.cs",
+              "DocumentMoniker": "C:\\Users\\madel\\CrmContactsApi\\Models\\CalificacionContacto.cs",
+              "RelativeDocumentMoniker": "Models\\CalificacionContacto.cs",
+              "ToolTip": "C:\\Users\\madel\\CrmContactsApi\\Models\\CalificacionContacto.cs",
+              "RelativeToolTip": "Models\\CalificacionContacto.cs",
+              "ViewState": "AgIAABMAAAAAAAAAAAA/wCcAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-23T03:35:00.937Z"
+              "WhenOpened": "2025-10-23T03:34:36.503Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 1,
+              "Title": "CalificacionService.cs",
+              "DocumentMoniker": "C:\\Users\\madel\\CrmContactsApi\\Services\\CalificacionService.cs",
+              "RelativeDocumentMoniker": "Services\\CalificacionService.cs",
+              "ToolTip": "C:\\Users\\madel\\CrmContactsApi\\Services\\CalificacionService.cs",
+              "RelativeToolTip": "Services\\CalificacionService.cs",
+              "ViewState": "AgIAABoAAAAAAAAAAADgvyQAAAAXAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-23T03:37:51.128Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "IContactoService.cs",
+              "DocumentMoniker": "C:\\Users\\madel\\CrmContactsApi\\Services\\IContactoService.cs",
+              "RelativeDocumentMoniker": "Services\\IContactoService.cs",
+              "ToolTip": "C:\\Users\\madel\\CrmContactsApi\\Services\\IContactoService.cs",
+              "RelativeToolTip": "Services\\IContactoService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-07-25T06:19:53.767Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "ICalificacionService.cs",
+              "DocumentMoniker": "C:\\Users\\madel\\CrmContactsApi\\Services\\ICalificacionService.cs",
+              "RelativeDocumentMoniker": "Services\\ICalificacionService.cs",
+              "ToolTip": "C:\\Users\\madel\\CrmContactsApi\\Services\\ICalificacionService.cs",
+              "RelativeToolTip": "Services\\ICalificacionService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-23T03:37:33.428Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
               "Title": "ContactosController.cs",
               "DocumentMoniker": "C:\\Users\\madel\\CrmContactsApi\\Controllers\\ContactosController.cs",
               "RelativeDocumentMoniker": "Controllers\\ContactosController.cs",
               "ToolTip": "C:\\Users\\madel\\CrmContactsApi\\Controllers\\ContactosController.cs",
               "RelativeToolTip": "Controllers\\ContactosController.cs",
-              "ViewState": "AgIAALABAAAAAAAAAAAgwE8CAAAhAAAAAAAAAA==",
+              "ViewState": "AgIAAMoCAAAAAAAAAADwv9oCAAAHAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-07-25T06:22:32.222Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "ContactoProfile.cs",
-              "DocumentMoniker": "C:\\Users\\madel\\CrmContactsApi\\Mappings\\ContactoProfile.cs",
-              "RelativeDocumentMoniker": "Mappings\\ContactoProfile.cs",
-              "ToolTip": "C:\\Users\\madel\\CrmContactsApi\\Mappings\\ContactoProfile.cs",
-              "RelativeToolTip": "Mappings\\ContactoProfile.cs",
-              "ViewState": "AgIAABQAAAAAAAAAAADwvyEAAAAFAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-07-25T06:19:33.35Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 7,
               "Title": "CalificacionesController.cs",
               "DocumentMoniker": "C:\\Users\\madel\\CrmContactsApi\\Controllers\\CalificacionesController.cs",
               "RelativeDocumentMoniker": "Controllers\\CalificacionesController.cs",
@@ -214,43 +240,30 @@
             {
               "$type": "Document",
               "DocumentIndex": 4,
-              "Title": "CalificacionContacto.cs",
-              "DocumentMoniker": "C:\\Users\\madel\\CrmContactsApi\\Models\\CalificacionContacto.cs",
-              "RelativeDocumentMoniker": "Models\\CalificacionContacto.cs",
-              "ToolTip": "C:\\Users\\madel\\CrmContactsApi\\Models\\CalificacionContacto.cs",
-              "RelativeToolTip": "Models\\CalificacionContacto.cs",
-              "ViewState": "AgIAABMAAAAAAAAAAAA/wCcAAAABAAAAAAAAAA==",
+              "Title": "ContactoProfile.cs",
+              "DocumentMoniker": "C:\\Users\\madel\\CrmContactsApi\\Mappings\\ContactoProfile.cs",
+              "RelativeDocumentMoniker": "Mappings\\ContactoProfile.cs",
+              "ToolTip": "C:\\Users\\madel\\CrmContactsApi\\Mappings\\ContactoProfile.cs",
+              "RelativeToolTip": "Mappings\\ContactoProfile.cs",
+              "ViewState": "AgIAABQAAAAAAAAAAADwvyEAAAAFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-23T03:34:36.503Z"
+              "WhenOpened": "2025-07-25T06:19:33.35Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "CalificacionService.cs",
-              "DocumentMoniker": "C:\\Users\\madel\\CrmContactsApi\\Services\\CalificacionService.cs",
-              "RelativeDocumentMoniker": "Services\\CalificacionService.cs",
-              "ToolTip": "C:\\Users\\madel\\CrmContactsApi\\Services\\CalificacionService.cs",
-              "RelativeToolTip": "Services\\CalificacionService.cs",
-              "ViewState": "AgIAAEIAAAAAAAAAAAAiwFEAAAAoAAAAAAAAAA==",
+              "DocumentIndex": 5,
+              "Title": "CalificacionDto.cs",
+              "DocumentMoniker": "C:\\Users\\madel\\CrmContactsApi\\Models\\DTOs\\CalificacionDto.cs",
+              "RelativeDocumentMoniker": "Models\\DTOs\\CalificacionDto.cs",
+              "ToolTip": "C:\\Users\\madel\\CrmContactsApi\\Models\\DTOs\\CalificacionDto.cs",
+              "RelativeToolTip": "Models\\DTOs\\CalificacionDto.cs",
+              "ViewState": "AgIAAB8AAAAAAAAAAAA/wCgAAABAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-23T03:37:51.128Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-23T03:35:00.937Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "IContactoService.cs",
-              "DocumentMoniker": "C:\\Users\\madel\\CrmContactsApi\\Services\\IContactoService.cs",
-              "RelativeDocumentMoniker": "Services\\IContactoService.cs",
-              "ToolTip": "C:\\Users\\madel\\CrmContactsApi\\Services\\IContactoService.cs",
-              "RelativeToolTip": "Services\\IContactoService.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-07-25T06:19:53.767Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 9,
               "Title": "IDocumentoService.cs",
               "DocumentMoniker": "C:\\Users\\madel\\CrmContactsApi\\Services\\IDocumentoService.cs",
               "RelativeDocumentMoniker": "Services\\IDocumentoService.cs",
@@ -262,7 +275,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 8,
               "Title": "ContactoService.cs",
               "DocumentMoniker": "C:\\Users\\madel\\CrmContactsApi\\Services\\ContactoService.cs",
               "RelativeDocumentMoniker": "Services\\ContactoService.cs",
@@ -274,7 +287,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 10,
               "Title": "Role.cs",
               "DocumentMoniker": "C:\\Users\\madel\\CrmContactsApi\\Models\\Role.cs",
               "RelativeDocumentMoniker": "Models\\Role.cs",
@@ -286,7 +299,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 11,
               "Title": "CreateContactoRequest.cs",
               "DocumentMoniker": "C:\\Users\\madel\\CrmContactsApi\\Models\\DTOs\\CreateContactoRequest.cs",
               "RelativeDocumentMoniker": "Models\\DTOs\\CreateContactoRequest.cs",
@@ -298,7 +311,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
+              "DocumentIndex": 12,
               "Title": "ContactoDto.cs",
               "DocumentMoniker": "C:\\Users\\madel\\CrmContactsApi\\Models\\DTOs\\ContactoDto.cs",
               "RelativeDocumentMoniker": "Models\\DTOs\\ContactoDto.cs",
@@ -310,7 +323,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 12,
+              "DocumentIndex": 13,
               "Title": "UpdateContactoRequest.cs",
               "DocumentMoniker": "C:\\Users\\madel\\CrmContactsApi\\Models\\DTOs\\UpdateContactoRequest.cs",
               "RelativeDocumentMoniker": "Models\\DTOs\\UpdateContactoRequest.cs",
@@ -322,7 +335,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 13,
+              "DocumentIndex": 14,
               "Title": "UserDtos.cs",
               "DocumentMoniker": "C:\\Users\\madel\\CrmContactsApi\\Models\\DTOs\\UserDtos.cs",
               "RelativeDocumentMoniker": "Models\\DTOs\\UserDtos.cs",
@@ -334,7 +347,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 14,
+              "DocumentIndex": 15,
               "Title": "RolesController.cs",
               "DocumentMoniker": "C:\\Users\\madel\\CrmContactsApi\\Controllers\\RolesController.cs",
               "RelativeDocumentMoniker": "Controllers\\RolesController.cs",
@@ -346,7 +359,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 15,
+              "DocumentIndex": 16,
               "Title": "UsersController.cs",
               "DocumentMoniker": "C:\\Users\\madel\\CrmContactsApi\\Controllers\\UsersController.cs",
               "RelativeDocumentMoniker": "Controllers\\UsersController.cs",
@@ -358,7 +371,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 17,
+              "DocumentIndex": 18,
               "Title": "BulkCreateResult.cs",
               "DocumentMoniker": "C:\\Users\\madel\\CrmContactsApi\\Models\\BulkCreateResult.cs",
               "RelativeDocumentMoniker": "Models\\BulkCreateResult.cs",
@@ -370,7 +383,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 18,
+              "DocumentIndex": 19,
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\Users\\madel\\CrmContactsApi\\Program.cs",
               "RelativeDocumentMoniker": "Program.cs",
@@ -382,7 +395,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 16,
+              "DocumentIndex": 17,
               "Title": "AuthController.cs",
               "DocumentMoniker": "C:\\Users\\madel\\CrmContactsApi\\Controllers\\AuthController.cs",
               "RelativeDocumentMoniker": "Controllers\\AuthController.cs",
@@ -391,18 +404,6 @@
               "ViewState": "AgIAAOAAAAAAAAAAAADwv/QAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-08-16T02:00:21.409Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 19,
-              "Title": "ICalificacionService.cs",
-              "DocumentMoniker": "C:\\Users\\madel\\CrmContactsApi\\Services\\ICalificacionService.cs",
-              "RelativeDocumentMoniker": "Services\\ICalificacionService.cs",
-              "ToolTip": "C:\\Users\\madel\\CrmContactsApi\\Services\\ICalificacionService.cs",
-              "RelativeToolTip": "Services\\ICalificacionService.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-23T03:37:33.428Z"
             },
             {
               "$type": "Document",

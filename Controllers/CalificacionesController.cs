@@ -23,7 +23,7 @@ namespace CrmContactsApi.Controllers
 
         // POST: api/contactos/5/calificaciones
         [HttpPost]
-        [Authorize(Roles = "Gerente de Ventas,Administrador,Vendedor")]
+        [Authorize(Roles = "Gerente,Administrador,Vendedor")]
         public async Task<ActionResult<CalificacionDto>> CreateCalificacion(
             int contactoId,
             [FromBody] CreateCalificacionRequest request)
@@ -54,7 +54,7 @@ namespace CrmContactsApi.Controllers
 
         // GET: api/contactos/5/calificaciones
         [HttpGet]
-        [Authorize(Roles = "Gerente de Ventas,Administrador,Vendedor")]
+        [Authorize(Roles = "Gerente,Administrador,Vendedor")]
         public async Task<ActionResult<IEnumerable<CalificacionDto>>> GetHistorialCalificaciones(
             int contactoId,
             [FromQuery] int limit = 10)
@@ -72,7 +72,7 @@ namespace CrmContactsApi.Controllers
 
         // DELETE: api/contactos/5/calificaciones/3
         [HttpDelete("{calificacionId}")]
-        [Authorize(Roles = "Gerente de Ventas,Administrador")]
+        [Authorize(Roles = "Gerente,Administrador")]
         public async Task<ActionResult> DeleteCalificacion(int contactoId, int calificacionId)
         {
             try
