@@ -46,83 +46,110 @@ namespace CrmContactsApi.Services
 
         public async Task<PerfilContactoDto> GetPerfilContactoAsync(int contactoId)
         {
-            var contacto = await _contactoService.GetContactoByIdAsync(contactoId);
-            if (contacto == null)
-                throw new InvalidOperationException($"El contacto con ID {contactoId} no existe");
-
-            // Obtener nombres de usuarios que crearon y actualizaron el contacto
-            string? nombreUsuarioCreacion = null;
-            string? nombreUsuarioActualizacion = null;
-
-            if (contacto.UsuarioCreacion.HasValue)
+            try
             {
-                var userCreacion = await _context.Users
-                    .Where(u => u.Id == contacto.UsuarioCreacion.Value)
-                    .Select(u => new { u.FirstName, u.LastName, u.Username })
-                    .FirstOrDefaultAsync();
+                var contacto = await _contactoService.GetContactoByIdAsync(contactoId);
+                if (contacto == null)
+                    throw new InvalidOperationException($"El contacto con ID {contactoId} no existe");
 
-                if (userCreacion != null)
+                // Inicializar nombres como null
+                string? nombreUsuarioCreacion = null;
+                string? nombreUsuarioActualizacion = null;
+
+                // Intentar obtener nombre de usuario de creación
+                try
                 {
-                    nombreUsuarioCreacion = !string.IsNullOrWhiteSpace(userCreacion.FirstName)
-                        ? $"{userCreacion.FirstName} {userCreacion.LastName}".Trim()
-                        : userCreacion.Username;
+                    if (contacto.UsuarioCreacion.HasValue)
+                    {
+                        var userCreacion = await _context.Users
+                            .Where(u => u.Id == contacto.UsuarioCreacion.Value)
+                            .Select(u => new { u.FirstName, u.LastName, u.Username })
+                            .FirstOrDefaultAsync();
+
+                        if (userCreacion != null)
+                        {
+                            nombreUsuarioCreacion = !string.IsNullOrWhiteSpace(userCreacion.FirstName)
+                                ? $"{userCreacion.FirstName} {userCreacion.LastName}".Trim()
+                                : userCreacion.Username;
+                        }
+                    }
                 }
-            }
-
-            if (contacto.UsuarioActualizacion.HasValue)
-            {
-                var userActualizacion = await _context.Users
-                    .Where(u => u.Id == contacto.UsuarioActualizacion.Value)
-                    .Select(u => new { u.FirstName, u.LastName, u.Username })
-                    .FirstOrDefaultAsync();
-
-                if (userActualizacion != null)
+                catch
                 {
-                    nombreUsuarioActualizacion = !string.IsNullOrWhiteSpace(userActualizacion.FirstName)
-                        ? $"{userActualizacion.FirstName} {userActualizacion.LastName}".Trim()
-                        : userActualizacion.Username;
+                    // Si falla, simplemente dejamos null
                 }
-            }
 
-            // Obtener todas las calificaciones del contacto
-            var calificaciones = await _context.CalificacionesContacto
-                .Where(c => c.ContactoId == contactoId)
-                .OrderByDescending(c => c.FechaCalificacion)
-                .Take(10)
-                .ToListAsync();
-
-            // Calcular promedio
-            var promedio = calificaciones.Any()
-                ? Math.Round(calificaciones.Average(c => c.Calificacion), 2)
-                : 0;
-
-            // Estadísticas por módulo
-            var estadisticasPorModulo = await _context.CalificacionesContacto
-                .Where(c => c.ContactoId == contactoId)
-                .GroupBy(c => c.Modulo)
-                .Select(g => new EstadisticasModuloDto
+                // Intentar obtener nombre de usuario de actualización
+                try
                 {
-                    Modulo = g.Key,
-                    CalificacionPromedio = Math.Round(g.Average(c => c.Calificacion), 2),
-                    TotalCalificaciones = g.Count()
-                })
-                .ToListAsync();
+                    if (contacto.UsuarioActualizacion.HasValue)
+                    {
+                        var userActualizacion = await _context.Users
+                            .Where(u => u.Id == contacto.UsuarioActualizacion.Value)
+                            .Select(u => new { u.FirstName, u.LastName, u.Username })
+                            .FirstOrDefaultAsync();
 
-            var contactoConCalificacion = _mapper.Map<ContactoConCalificacionDto>(contacto);
-            contactoConCalificacion.CalificacionPromedio = (double)promedio;
-            contactoConCalificacion.TotalCalificaciones = calificaciones.Count;
-            contactoConCalificacion.UltimaCalificacion = calificaciones.FirstOrDefault()?.FechaCalificacion;
+                        if (userActualizacion != null)
+                        {
+                            nombreUsuarioActualizacion = !string.IsNullOrWhiteSpace(userActualizacion.FirstName)
+                                ? $"{userActualizacion.FirstName} {userActualizacion.LastName}".Trim()
+                                : userActualizacion.Username;
+                        }
+                    }
+                }
+                catch
+                {
+                    // Si falla, simplemente dejamos null
+                }
 
-            // Agregar los nombres de usuario
-            contactoConCalificacion.NombreUsuarioCreacion = nombreUsuarioCreacion ?? "N/A";
-            contactoConCalificacion.NombreUsuarioActualizacion = nombreUsuarioActualizacion ?? "N/A";
+                // Obtener todas las calificaciones del contacto
+                var calificaciones = await _context.CalificacionesContacto
+                    .Where(c => c.ContactoId == contactoId)
+                    .OrderByDescending(c => c.FechaCalificacion)
+                    .Take(10)
+                    .ToListAsync();
 
-            return new PerfilContactoDto
+                // Calcular promedio
+                var promedio = calificaciones.Any()
+                    ? Math.Round(calificaciones.Average(c => c.Calificacion), 2)
+                    : 0;
+
+                // Estadísticas por módulo
+                var estadisticasPorModulo = await _context.CalificacionesContacto
+                    .Where(c => c.ContactoId == contactoId)
+                    .GroupBy(c => c.Modulo)
+                    .Select(g => new EstadisticasModuloDto
+                    {
+                        Modulo = g.Key,
+                        CalificacionPromedio = Math.Round(g.Average(c => c.Calificacion), 2),
+                        TotalCalificaciones = g.Count()
+                    })
+                    .ToListAsync();
+
+                var contactoConCalificacion = _mapper.Map<ContactoConCalificacionDto>(contacto);
+                contactoConCalificacion.CalificacionPromedio = (double)promedio;
+                contactoConCalificacion.TotalCalificaciones = calificaciones.Count;
+                contactoConCalificacion.UltimaCalificacion = calificaciones.FirstOrDefault()?.FechaCalificacion;
+
+                // Asignar los nombres (si no existen las propiedades, esto causará error)
+                if (contactoConCalificacion != null)
+                {
+                    contactoConCalificacion.NombreUsuarioCreacion = nombreUsuarioCreacion;
+                    contactoConCalificacion.NombreUsuarioActualizacion = nombreUsuarioActualizacion;
+                }
+
+                return new PerfilContactoDto
+                {
+                    Contacto = contactoConCalificacion,
+                    HistorialCalificaciones = _mapper.Map<List<CalificacionDto>>(calificaciones),
+                    EstadisticasPorModulo = estadisticasPorModulo.ToDictionary(e => e.Modulo, e => e)
+                };
+            }
+            catch (Exception ex)
             {
-                Contacto = contactoConCalificacion,
-                HistorialCalificaciones = _mapper.Map<List<CalificacionDto>>(calificaciones),
-                EstadisticasPorModulo = estadisticasPorModulo.ToDictionary(e => e.Modulo, e => e)
-            };
+                // Log el error para debug
+                throw new InvalidOperationException($"Error al obtener perfil: {ex.Message}", ex);
+            }
         }
 
         public async Task<IEnumerable<CalificacionDto>> GetHistorialCalificacionesAsync(int contactoId, int limit = 10)
