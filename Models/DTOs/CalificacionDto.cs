@@ -29,9 +29,37 @@ namespace CrmContactsApi.DTOs
         public int? UsuarioCalificacion { get; set; }
     }
 
-    public class ContactoConCalificacionDto : ContactoDto
+    public class ContactoConCalificacionDto
     {
-        public decimal CalificacionPromedio { get; set; }
+        public int Id { get; set; }
+        public string Nombre { get; set; } = string.Empty;
+        public string Apellido { get; set; } = string.Empty;
+        public string Dpi { get; set; } = string.Empty;
+        public string? Nit { get; set; }
+        public string? Telefono { get; set; }
+        public string? Email { get; set; }
+        public string? Direccion { get; set; }
+        public string? Zona { get; set; }
+        public string? Municipio { get; set; }
+        public string? Departamento { get; set; }
+        public string? Categoria { get; set; }
+        public string? Subcategoria { get; set; }
+        public int DiasCredito { get; set; }
+        public decimal LimiteCredito { get; set; }
+        public bool Activo { get; set; }
+        public DateTime FechaCreacion { get; set; }
+        public DateTime FechaActualizacion { get; set; }
+
+        // Campos de usuario (IDs)
+        public int? UsuarioCreacion { get; set; }
+        public int? UsuarioActualizacion { get; set; }
+
+        // Campos de usuario (Nombres) - AGREGAR ESTOS
+        public string? NombreUsuarioCreacion { get; set; }
+        public string? NombreUsuarioActualizacion { get; set; }
+
+        // Campos de calificación
+        public double CalificacionPromedio { get; set; }
         public int TotalCalificaciones { get; set; }
         public DateTime? UltimaCalificacion { get; set; }
     }

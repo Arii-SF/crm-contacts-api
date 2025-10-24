@@ -50,6 +50,40 @@ namespace CrmContactsApi.Services
             if (contacto == null)
                 throw new InvalidOperationException($"El contacto con ID {contactoId} no existe");
 
+            // Obtener nombres de usuarios que crearon y actualizaron el contacto
+            string? nombreUsuarioCreacion = null;
+            string? nombreUsuarioActualizacion = null;
+
+            if (contacto.UsuarioCreacion.HasValue)
+            {
+                var userCreacion = await _context.Users
+                    .Where(u => u.Id == contacto.UsuarioCreacion.Value)
+                    .Select(u => new { u.FirstName, u.LastName, u.Username })
+                    .FirstOrDefaultAsync();
+
+                if (userCreacion != null)
+                {
+                    nombreUsuarioCreacion = !string.IsNullOrWhiteSpace(userCreacion.FirstName)
+                        ? $"{userCreacion.FirstName} {userCreacion.LastName}".Trim()
+                        : userCreacion.Username;
+                }
+            }
+
+            if (contacto.UsuarioActualizacion.HasValue)
+            {
+                var userActualizacion = await _context.Users
+                    .Where(u => u.Id == contacto.UsuarioActualizacion.Value)
+                    .Select(u => new { u.FirstName, u.LastName, u.Username })
+                    .FirstOrDefaultAsync();
+
+                if (userActualizacion != null)
+                {
+                    nombreUsuarioActualizacion = !string.IsNullOrWhiteSpace(userActualizacion.FirstName)
+                        ? $"{userActualizacion.FirstName} {userActualizacion.LastName}".Trim()
+                        : userActualizacion.Username;
+                }
+            }
+
             // Obtener todas las calificaciones del contacto
             var calificaciones = await _context.CalificacionesContacto
                 .Where(c => c.ContactoId == contactoId)
@@ -75,9 +109,13 @@ namespace CrmContactsApi.Services
                 .ToListAsync();
 
             var contactoConCalificacion = _mapper.Map<ContactoConCalificacionDto>(contacto);
-            contactoConCalificacion.CalificacionPromedio = promedio;
+            contactoConCalificacion.CalificacionPromedio = (double)promedio;
             contactoConCalificacion.TotalCalificaciones = calificaciones.Count;
             contactoConCalificacion.UltimaCalificacion = calificaciones.FirstOrDefault()?.FechaCalificacion;
+
+            // Agregar los nombres de usuario
+            contactoConCalificacion.NombreUsuarioCreacion = nombreUsuarioCreacion ?? "N/A";
+            contactoConCalificacion.NombreUsuarioActualizacion = nombreUsuarioActualizacion ?? "N/A";
 
             return new PerfilContactoDto
             {
