@@ -75,7 +75,7 @@ namespace CrmContactsApi.Services
                 .ToListAsync();
 
             var contactoConCalificacion = _mapper.Map<ContactoConCalificacionDto>(contacto);
-            contactoConCalificacion.CalificacionPromedio = (double)promedio;
+            contactoConCalificacion.CalificacionPromedio = promedio;
             contactoConCalificacion.TotalCalificaciones = calificaciones.Count;
             contactoConCalificacion.UltimaCalificacion = calificaciones.FirstOrDefault()?.FechaCalificacion;
 
