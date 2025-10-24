@@ -28,11 +28,8 @@ namespace CrmContactsApi.Mappings
 
             CreateMap<CalificacionContacto, CalificacionDto>();
             CreateMap<CreateCalificacionRequest, CalificacionContacto>();
-
             CreateMap<Contacto, ContactoConCalificacionDto>()
-                .IncludeBase<Contacto, ContactoDto>()
-                .ForMember(dest => dest.NombreUsuarioCreacion, opt => opt.Ignore())
-                .ForMember(dest => dest.NombreUsuarioActualizacion, opt => opt.Ignore());
+                .IncludeBase<Contacto, ContactoDto>();
         }
     }
 }

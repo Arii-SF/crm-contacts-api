@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("CrmContactsApi")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+8ebdc14d85cda7261784b075d92770ac008c5540")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+240cad0c1d1d0b7075a22663ad6cf26dc3aea7f3")]
 [assembly: System.Reflection.AssemblyProductAttribute("CrmContactsApi")]
 [assembly: System.Reflection.AssemblyTitleAttribute("CrmContactsApi")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
