@@ -79,37 +79,6 @@ namespace CrmContactsApi.Services
             contactoConCalificacion.TotalCalificaciones = calificaciones.Count;
             contactoConCalificacion.UltimaCalificacion = calificaciones.FirstOrDefault()?.FechaCalificacion;
 
-            // Obtener nombres de usuarios SOLO SI EXISTEN LAS PROPIEDADES EN EL DTO
-            if (contacto.UsuarioCreacion.HasValue)
-            {
-                var userCreacion = await _context.Users
-                    .Where(u => u.Id == contacto.UsuarioCreacion.Value)
-                    .Select(u => new { u.FirstName, u.LastName, u.Username })
-                    .FirstOrDefaultAsync();
-
-                if (userCreacion != null)
-                {
-                    contactoConCalificacion.NombreUsuarioCreacion = !string.IsNullOrWhiteSpace(userCreacion.FirstName)
-                        ? $"{userCreacion.FirstName} {userCreacion.LastName}".Trim()
-                        : userCreacion.Username;
-                }
-            }
-
-            if (contacto.UsuarioActualizacion.HasValue)
-            {
-                var userActualizacion = await _context.Users
-                    .Where(u => u.Id == contacto.UsuarioActualizacion.Value)
-                    .Select(u => new { u.FirstName, u.LastName, u.Username })
-                    .FirstOrDefaultAsync();
-
-                if (userActualizacion != null)
-                {
-                    contactoConCalificacion.NombreUsuarioActualizacion = !string.IsNullOrWhiteSpace(userActualizacion.FirstName)
-                        ? $"{userActualizacion.FirstName} {userActualizacion.LastName}".Trim()
-                        : userActualizacion.Username;
-                }
-            }
-
             return new PerfilContactoDto
             {
                 Contacto = contactoConCalificacion,
