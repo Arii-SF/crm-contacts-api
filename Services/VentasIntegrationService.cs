@@ -101,7 +101,7 @@ namespace CrmContactsApi.Services
             var request = new HttpRequestMessage(method, endpoint);
 
             // CRÍTICO: Agregar "Bearer " antes del token con espacio
-            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer ", token);
 
             if (content != null)
             {
