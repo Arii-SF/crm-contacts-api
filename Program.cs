@@ -101,6 +101,9 @@ builder.Services.AddHttpClient<IEmailService, EmailService>();
 
 builder.Services.AddScoped<ICalificacionService, CalificacionService>();
 
+builder.Services.AddScoped<IVentasIntegrationService, VentasIntegrationService>();
+
+
 
 var app = builder.Build();
 // Configure the HTTP request pipeline.
